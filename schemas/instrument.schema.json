@@ -1,0 +1,199 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Instrument Analysis",
+  "description": "Schema for instrument analysis during homework",
+  "type": "object",
+  "required": ["symbol", "date", "current_price", "levels", "prerequisites", "recommendation"],
+  "properties": {
+    "symbol": {
+      "type": "string",
+      "description": "Ticker symbol (e.g., AAPL, TSLA, ES)"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Analysis date in YYYY-MM-DD format"
+    },
+    "current_price": {
+      "type": "number",
+      "description": "Current price of the instrument"
+    },
+    "change_percent": {
+      "type": "number",
+      "description": "Price change percentage"
+    },
+    "volume": {
+      "type": "number",
+      "description": "Current volume"
+    },
+    "volume_vs_avg": {
+      "type": "number",
+      "description": "Volume vs 20-day average (e.g., 1.2 means 20% above average)"
+    },
+    "atr_14": {
+      "type": "number",
+      "description": "14-period Average True Range"
+    },
+    "levels": {
+      "type": "object",
+      "required": ["resistance", "support"],
+      "properties": {
+        "resistance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["price", "type", "comment"],
+            "properties": {
+              "price": {
+                "type": "number"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["D1 High", "D1 Low", "W1 High", "W1 Low", "M1 High", "M1 Low", "Round Number", "Yesterday High", "Yesterday Low", "Yesterday Close", "Week Open", "Month Open"]
+              },
+              "comment": {
+                "type": "string"
+              },
+              "strength": {
+                "type": "string",
+                "enum": ["strong", "medium", "weak"]
+              }
+            }
+          }
+        },
+        "support": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["price", "type", "comment"],
+            "properties": {
+              "price": {
+                "type": "number"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["D1 High", "D1 Low", "W1 High", "W1 Low", "M1 High", "M1 Low", "Round Number", "Yesterday High", "Yesterday Low", "Yesterday Close", "Week Open", "Month Open"]
+              },
+              "comment": {
+                "type": "string"
+              },
+              "strength": {
+                "type": "string",
+                "enum": ["strong", "medium", "weak"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "prerequisites": {
+      "type": "object",
+      "properties": {
+        "in_trend_or_range": {
+          "type": "boolean",
+          "description": "Instrument is in trend or at range boundary"
+        },
+        "has_clear_level": {
+          "type": "boolean",
+          "description": "Has clear level to work with"
+        },
+        "sufficient_volatility": {
+          "type": "boolean",
+          "description": "ATR is sufficient for movement to TP"
+        },
+        "sufficient_volume": {
+          "type": "boolean",
+          "description": "Volume is above average"
+        },
+        "no_important_news": {
+          "type": "boolean",
+          "description": "No important news in next 2 hours"
+        }
+      }
+    },
+    "trade_setup": {
+      "$ref": "#/definitions/tradeSetup"
+    },
+    "recommendation": {
+      "type": "object",
+      "required": ["action", "reason"],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["add_to_long_list", "add_to_short_list", "skip"]
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "tradeSetup": {
+      "type": "object",
+      "required": ["direction", "trigger", "entry_price", "stop_loss", "take_profit"],
+      "properties": {
+        "direction": {
+          "type": "string",
+          "enum": ["long", "short"]
+        },
+        "trigger": {
+          "type": "string",
+          "description": "Clear condition for entry (e.g., 'Breakout of 185.50 with retest')"
+        },
+        "entry_price": {
+          "type": "number",
+          "description": "Planned entry price"
+        },
+        "stop_loss": {
+          "type": "number",
+          "description": "Stop loss price"
+        },
+        "stop_loss_percent": {
+          "type": "number",
+          "description": "Stop loss as percentage from entry"
+        },
+        "take_profit": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["price", "risk_reward"],
+            "properties": {
+              "price": {
+                "type": "number"
+              },
+              "risk_reward": {
+                "type": "number",
+                "description": "Risk:Reward ratio (e.g., 2.0 means 2:1)"
+              },
+              "comment": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "position_size": {
+          "type": "object",
+          "properties": {
+            "units": {
+              "type": "number",
+              "description": "Number of shares/contracts"
+            },
+            "risk_amount": {
+              "type": "number",
+              "description": "Risk amount in $"
+            },
+            "risk_percent": {
+              "type": "number",
+              "description": "Risk as percentage of deposit (should be ≤ 1%)"
+            }
+          }
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes about the setup"
+        }
+      }
+    }
+  }
+}

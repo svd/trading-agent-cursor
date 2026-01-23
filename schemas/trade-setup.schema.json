@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Trade Setup",
+  "description": "Schema for trade setup details",
+  "type": "object",
+  "required": ["symbol", "date", "direction", "trigger", "entry_price", "stop_loss", "take_profit"],
+  "properties": {
+    "symbol": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["long", "short"]
+    },
+    "trigger": {
+      "type": "string",
+      "description": "Clear condition for entry"
+    },
+    "entry_price": {
+      "type": "number"
+    },
+    "stop_loss": {
+      "type": "number"
+    },
+    "stop_loss_percent": {
+      "type": "number"
+    },
+    "take_profit": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["price", "risk_reward"],
+        "properties": {
+          "price": {
+            "type": "number"
+          },
+          "risk_reward": {
+            "type": "number",
+            "minimum": 2.0,
+            "description": "Minimum 2:1 R:R required"
+          },
+          "comment": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "position_size": {
+      "type": "object",
+      "properties": {
+        "units": {
+          "type": "number"
+        },
+        "risk_amount": {
+          "type": "number"
+        },
+        "risk_percent": {
+          "type": "number",
+          "maximum": 1.0,
+          "description": "Must be ≤ 1%"
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Journal Entry",
+  "description": "Schema for trade journal entry",
+  "type": "object",
+  "required": ["date", "symbol", "direction", "entry_price", "entry_time"],
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "symbol": {
+      "type": "string"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["long", "short"]
+    },
+    "entry_price": {
+      "type": "number"
+    },
+    "entry_time": {
+      "type": "string",
+      "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+      "description": "Time in HH:MM format"
+    },
+    "exit_price": {
+      "type": "number",
+      "description": "Actual exit price (null if position still open)"
+    },
+    "exit_time": {
+      "type": "string",
+      "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+    },
+    "stop_loss": {
+      "type": "number",
+      "description": "Planned stop loss"
+    },
+    "take_profit": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Planned take profit levels"
+    },
+    "pnl": {
+      "type": "number",
+      "description": "Profit/Loss in $"
+    },
+    "pnl_percent": {
+      "type": "number",
+      "description": "Profit/Loss as percentage"
+    },
+    "risk_reward": {
+      "type": "number",
+      "description": "Actual R:R achieved"
+    },
+    "plan_followed": {
+      "type": "boolean",
+      "description": "Whether the trade followed the planned scenario"
+    },
+    "exit_reason": {
+      "type": "string",
+      "enum": ["take_profit", "stop_loss", "early_exit", "time_exit"],
+      "description": "Reason for exit"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the trade"
+    },
+    "mistakes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of mistakes made in this trade"
+    },
+    "lessons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lessons learned from this trade"
+    }
+  }
+}

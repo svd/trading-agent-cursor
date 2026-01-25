@@ -9,9 +9,10 @@
 ## Доступные инструменты (MCP серверы)
 
 ### markethub-mcp
-- `get_stock_history` — исторические OHLCV данные
-- `get_real_time_quote` — текущие котировки
-- `get_market_stats` — рыночная статистика
+- `get_stock_history` — исторические OHLCV данные для акций (только для акций, вызывает ошибку для криптовалют)
+- `get_crypto_history` — исторические OHLCV данные для криптовалют (с опциональным параметром exchange)
+- `get_real_time_quote` — текущие котировки (работает для акций и криптовалют)
+- `get_market_stats` — рыночная статистика (только для акций)
 - `get_options_chain` — опционные цепочки
 - `get_income_statement`, `get_balance_sheet`, `get_cash_flow` — финансовые отчеты
 

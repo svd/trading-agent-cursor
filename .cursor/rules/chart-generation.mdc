@@ -3,6 +3,8 @@ description: Правила генерации графиков через MCP g
 alwaysApply: false
 ---
 
+> **Примечание:** Это правило было конвертировано в skill `chart-generation`. Для активации используйте skill `@chart-generation`. Это правило оставлено для справки.
+
 # Генерация графиков через MCP generate_chart
 
 ## Важно: О примерах кода

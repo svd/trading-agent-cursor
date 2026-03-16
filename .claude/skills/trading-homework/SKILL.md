@@ -84,23 +84,70 @@ homework/YYYY-MM-DD/data/
 homework/YYYY-MM-DD/charts/
 ```
 
-### 2. Screening (skip if user provided specific instruments)
+### 2. Screening — Determine Source
+
+**First, check which mode applies:**
+
+| User input | Action |
+|------------|--------|
+| "по META, AAPL, LLY" (explicit tickers) | Skip screening → Step 3 directly |
+| "по вотчлисту" / "из watchlist" | Use `watchlist/{TODAY}/longs.md` + `shorts.md` tickers |
+| "по акциям" / "скрининг акций" (no tickers) | **Prompt with AskUserQuestion** |
+| "сделай домашку" (no asset class) | Ask: "Какие инструменты?" |
+
+**AskUserQuestion when user says "по акциям" without specifics:**
+
+Use the AskUserQuestion tool to present these options:
+
+```python
+AskUserQuestion(
+    questions=[{
+        "question": "Какие акции проанализировать?",
+        "header": "Тикеры",
+        "multiSelect": true,
+        "options": [
+            {"label": "Mega-cap (FAAMG)", "description": "AAPL, MSFT, GOOGL, AMZN, META"},
+            {"label": "Tech / Internet", "description": "Batch 1 — 25 tech tickers"},
+            {"label": "Semiconductors", "description": "Batch 2 — NVDA, AMD, INTC, ..."},
+            {"label": "Tech Software", "description": "Batch 3 — CRM, ADBE, ORCL, ..."},
+            {"label": "Energy / Materials", "description": "Batch 4 — XOM, CVX, ..."},
+            {"label": "Financials", "description": "Batches 5-6 — Banks, payments"},
+            {"label": "Industrials", "description": "Batch 7 — BA, CAT, GE, ..."},
+            {"label": "Consumer", "description": "Batches 8-9 — Retail, services"},
+            {"label": "Healthcare", "description": "Batches 10-11 — Pharma, devices"},
+            {"label": "REITs / Utilities", "description": "Batch 12 — AMT, NEE, ..."},
+            {"label": "All 300 stocks", "description": "Full S&P500 + NASDAQ100 (slow)"},
+            {"label": "From watchlist", "description": "Use today's longs/shorts"},
+            {"label": "Custom", "description": "Enter your own tickers"}
+        ]
+    }]
+)
+```
+
+**After user selection:**
+- If user selected sector batch(es): read tickers from `prompts/stocks-universe.md` for those batches
+- If user selected "Custom": prompt for ticker list via follow-up question
+- If user selected "From watchlist": read today's watchlist
+- Then proceed with screening using selected tickers
+
+### 3. Run Screening
 
 - **Stocks**: fill `screening-stocks.md` → Task → `homework/{DATE}/screening/screening-stocks.md`
+- For batch selections from universe: create separate screening tasks per batch (e.g., `batch-tech-internet.md`)
 - **Crypto per exchange**: fill `screening-crypto.md` → Task → `homework/{DATE}/screening/screening-crypto-{exchange}.md`
 - Run up to 4 screening Tasks in parallel.
 - After completion: check `STATUS: success` or `STATUS: error`. Present candidate table, optionally confirm with user before proceeding.
 
-### 3. Instrument Analysis (batched, 2–4 parallel)
+### 4. Instrument Analysis (batched, 2–4 parallel)
 
 For each candidate (or user-specified instruments directly):
 
 1. Read `prompts/subagents/instrument-analysis.md`
-2. Substitute all placeholders; include `{{SCREENING_DATA}}` snippet if available from step 2
+2. Substitute all placeholders; include `{{SCREENING_DATA}}` snippet if available from step 3
 3. Launch Task
 4. After Task completes: read output file for `RECOMMENDATION:` line
 
-### 4. Update Summary
+### 5. Update Summary
 
 After each analysis Task, append/update row in `homework/{DATE}/Summary-{DATE}.md`:
 
@@ -114,7 +161,7 @@ After each analysis Task, append/update row in `homework/{DATE}/Summary-{DATE}.m
 | [LLY](./LLY.md) | ❌ Пропустить | Боковик, нет чёткого уровня |
 ```
 
-### 5. Present Results
+### 6. Present Results
 
 Show Summary table and list of homework files + charts.
 

@@ -23,16 +23,16 @@ Apply this skill when:
 ### Step 1: Determine Chart File Paths
 
 **For stocks and other instruments:**
-- Input JSON: `homework/YYYY-MM-DD/SYMBOL_PERIOD_chart_input.json`
-  - Example: `homework/2026-01-25/AAPL_1D_chart_input.json`
-- Output PNG: `homework/YYYY-MM-DD/SYMBOL_PERIOD.png`
-  - Example: `homework/2026-01-25/AAPL_1D.png`
+- Input JSON: `homework/YYYY-MM-DD/data/SYMBOL_PERIOD_chart_input.json`
+  - Example: `homework/2026-01-25/data/AAPL_1D_chart_input.json`
+- Output PNG: `homework/YYYY-MM-DD/charts/SYMBOL_PERIOD.png`
+  - Example: `homework/2026-01-25/charts/AAPL_1D.png`
 
 **For cryptocurrencies:**
-- Input JSON: `homework/YYYY-MM-DD/SYMBOL-EXCHANGE_PERIOD_chart_input.json`
-  - Example: `homework/2026-01-25/BTCUSDT-Binance_1D_chart_input.json`
-- Output PNG: `homework/YYYY-MM-DD/SYMBOL-EXCHANGE_PERIOD.png`
-  - Example: `homework/2026-01-25/BTCUSDT-Binance_1D.png`
+- Input JSON: `homework/YYYY-MM-DD/data/SYMBOL-EXCHANGE_PERIOD_chart_input.json`
+  - Example: `homework/2026-01-25/data/BTCUSDT-Binance_1D_chart_input.json`
+- Output PNG: `homework/YYYY-MM-DD/charts/SYMBOL-EXCHANGE_PERIOD.png`
+  - Example: `homework/2026-01-25/charts/BTCUSDT-Binance_1D.png`
 
 **Period mapping:**
 - From interval `1d` → use `1D` in filename
@@ -65,15 +65,15 @@ Use `read_file` or `list_dir` to check if file exists:
     "renderer": "mplfinance"
   }
   ```
-- Write ChartInput to JSON file: `homework/YYYY-MM-DD/SYMBOL_1D_chart_input.json`
+- Write ChartInput to JSON file: `homework/YYYY-MM-DD/data/SYMBOL_1D_chart_input.json`
 - Call MCP `generate_chart_from_file` via `call_mcp_tool`:
   ```json
   {
     "server": "user-market-charts",
     "toolName": "generate_chart_from_file",
     "arguments": {
-      "input_path": "/absolute/path/to/homework/YYYY-MM-DD/SYMBOL_1D_chart_input.json",
-      "output_path": "/absolute/path/to/homework/YYYY-MM-DD/SYMBOL_1D.png"
+      "input_path": "/absolute/path/to/homework/YYYY-MM-DD/data/SYMBOL_1D_chart_input.json",
+      "output_path": "/absolute/path/to/homework/YYYY-MM-DD/charts/SYMBOL_1D.png"
     }
   }
   ```
@@ -233,12 +233,12 @@ Convert levels from analysis to `ChartLevel` format:
 MCP tool writes PNG directly to `output_path`:
 1. Prepare ChartInput JSON with ticker, ohlcv, levels, chart_type, style, renderer, title
 2. Write JSON to input file with period in name:
-   - For stocks: `homework/YYYY-MM-DD/SYMBOL_PERIOD_chart_input.json` (e.g., `AAPL_1D_chart_input.json`)
-   - For crypto: `homework/YYYY-MM-DD/SYMBOL-EXCHANGE_PERIOD_chart_input.json` (e.g., `BTCUSDT-Binance_1D_chart_input.json`)
+   - For stocks: `homework/YYYY-MM-DD/data/SYMBOL_PERIOD_chart_input.json` (e.g., `data/AAPL_1D_chart_input.json`)
+   - For crypto: `homework/YYYY-MM-DD/data/SYMBOL-EXCHANGE_PERIOD_chart_input.json` (e.g., `data/BTCUSDT-Binance_1D_chart_input.json`)
 3. Call `generate_chart_from_file` with absolute paths for `input_path` and `output_path`
 4. Tool generates and saves PNG to output file:
-   - For stocks: `homework/YYYY-MM-DD/SYMBOL_PERIOD.png` (e.g., `AAPL_1D.png`)
-   - For crypto: `homework/YYYY-MM-DD/SYMBOL-EXCHANGE_PERIOD.png` (e.g., `BTCUSDT-Binance_1D.png`)
+   - For stocks: `homework/YYYY-MM-DD/charts/SYMBOL_PERIOD.png` (e.g., `charts/AAPL_1D.png`)
+   - For crypto: `homework/YYYY-MM-DD/charts/SYMBOL-EXCHANGE_PERIOD.png` (e.g., `charts/BTCUSDT-Binance_1D.png`)
 5. Verify file exists and is not empty
 6. Optionally delete input JSON file after successful generation to avoid clutter
 7. Add link to chart in homework file
@@ -249,14 +249,14 @@ MCP tool writes PNG directly to `output_path`:
 ```markdown
 ## График
 
-![График {SYMBOL}](./{SYMBOL}_1D.png)
+![График {SYMBOL}](./charts/{SYMBOL}_1D.png)
 ```
 
 **For cryptocurrencies:**
 ```markdown
 ## График
 
-![График {SYMBOL} ({EXCHANGE})](./{SYMBOL}-{EXCHANGE}_1D.png)
+![График {SYMBOL} ({EXCHANGE})](./charts/{SYMBOL}-{EXCHANGE}_1D.png)
 ```
 
 ## Prohibited Actions

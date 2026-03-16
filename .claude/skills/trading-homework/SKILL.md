@@ -41,7 +41,7 @@ OHLCV data and chart input JSON are written to `{WORKSPACE}/tmp/` — **not pass
 Sub-agent instrument flow:
   1. Fetch OHLCV → save {WORKSPACE}/tmp/SYMBOL_DATE_ohlcv_1d.json
   2. Analyze levels/trends from json (not via LLM context)
-  3. generate_chart_from_file(input_path=json_path) → homework/DATE/SYMBOL_1D.png
+  3. generate_chart_from_file(input_path=json_path) → homework/DATE/charts/SYMBOL_1D.png
   4. Write homework/DATE/SYMBOL.md with RECOMMENDATION: line
   5. Orchestrator reads only RECOMMENDATION: — OHLCV never passes through orchestrator
 ```
@@ -56,13 +56,13 @@ Sub-agent instrument flow:
 **screening-stocks.md**
 - `{{TICKERS}}` — comma-separated: `AAPL, META, NFLX`
 - `{{DATE}}` — `YYYY-MM-DD`
-- `{{OUTPUT_FILE}}` — absolute path: `{workspace}/homework/{DATE}/screening-stocks.md`
+- `{{OUTPUT_FILE}}` — absolute path: `{workspace}/homework/{DATE}/screening/screening-stocks.md`
 - `{{WORKSPACE}}` — workspace root absolute path
 
 **screening-crypto.md**
 - `{{PAIRS}}` — e.g. `BTCUSDT, ETHUSDT`
 - `{{EXCHANGE}}` — `binance` or `bybit`
-- `{{DATE}}`, `{{OUTPUT_FILE}}` (e.g. `homework/{DATE}/screening-crypto-binance.md`), `{{WORKSPACE}}`
+- `{{DATE}}`, `{{OUTPUT_FILE}}` (e.g. `homework/{DATE}/screening/screening-crypto-binance.md`), `{{WORKSPACE}}`
 
 **instrument-analysis.md**
 - `{{SYMBOL}}` — `AAPL` or `BTCUSDT`
@@ -79,12 +79,15 @@ Use **absolute paths** for `{{OUTPUT_FILE}}` and `{{WORKSPACE}}`.
 
 ```
 homework/YYYY-MM-DD/
+homework/YYYY-MM-DD/screening/
+homework/YYYY-MM-DD/data/
+homework/YYYY-MM-DD/charts/
 ```
 
 ### 2. Screening (skip if user provided specific instruments)
 
-- **Stocks**: fill `screening-stocks.md` → Task → `homework/{DATE}/screening-stocks.md`
-- **Crypto per exchange**: fill `screening-crypto.md` → Task → `homework/{DATE}/screening-crypto-{exchange}.md`
+- **Stocks**: fill `screening-stocks.md` → Task → `homework/{DATE}/screening/screening-stocks.md`
+- **Crypto per exchange**: fill `screening-crypto.md` → Task → `homework/{DATE}/screening/screening-crypto-{exchange}.md`
 - Run up to 4 screening Tasks in parallel.
 - After completion: check `STATUS: success` or `STATUS: error`. Present candidate table, optionally confirm with user before proceeding.
 
@@ -119,11 +122,12 @@ Show Summary table and list of homework files + charts.
 
 | Type | Path |
 |------|------|
-| Screening stocks | `homework/{DATE}/screening-stocks.md` |
-| Screening crypto | `homework/{DATE}/screening-crypto-{exchange}.md` |
+| Screening stocks | `homework/{DATE}/screening/screening-stocks.md` |
+| Screening crypto | `homework/{DATE}/screening/screening-crypto-{exchange}.md` |
 | Homework stock | `homework/{DATE}/SYMBOL.md` |
 | Homework crypto | `homework/{DATE}/SYMBOL-EXCHANGE.md` |
-| Chart | `homework/{DATE}/SYMBOL_1D.png` or `SYMBOL-EXCHANGE_1D.png` |
+| Chart JSON | `homework/{DATE}/data/SYMBOL_1D_chart_input.json` or `SYMBOL-EXCHANGE_1D_chart_input.json` |
+| Chart PNG | `homework/{DATE}/charts/SYMBOL_1D.png` or `SYMBOL-EXCHANGE_1D.png` |
 | Summary | `homework/{DATE}/Summary-{DATE}.md` |
 
 Exchange name with capital first letter: Binance, Bybit, Coinbase.

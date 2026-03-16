@@ -45,8 +45,8 @@ You are an analysis sub-agent. Your ONLY task is to perform full homework analys
 
 ### 6. Chart generation
 
-- **Stocks:** get_stock_history (interval 1d, start_date 5 months ago, end_date {{DATE}}). Build ChartInput: ticker, title, ohlcv, levels (convert to ChartLevel: type support/resistance, strength weak|medium|strong|very_strong). Write JSON to `homework/{{DATE}}/{{SYMBOL}}_1D_chart_input.json`, then call **user-market-charts / generate_chart_from_file** with input_path and output_path `homework/{{DATE}}/{{SYMBOL}}_1D.png`. **Max 3 attempts:** 5 months, then 4 months, then 3 months if previous failed. Verify file exists after each call; stop on success.
-- **Crypto:** get_crypto_history (same range, exchange if needed). Input JSON: `{{SYMBOL}}-{{EXCHANGE}}_1D_chart_input.json`, output PNG: `{{SYMBOL}}-{{EXCHANGE}}_1D.png`.
+- **Stocks:** get_stock_history (interval 1d, start_date 5 months ago, end_date {{DATE}}). Build ChartInput: ticker, title, ohlcv, levels (convert to ChartLevel: type support/resistance, strength weak|medium|strong|very_strong). Write JSON to `homework/{{DATE}}/data/{{SYMBOL}}_1D_chart_input.json`, then call **user-market-charts / generate_chart_from_file** with input_path and output_path `homework/{{DATE}}/charts/{{SYMBOL}}_1D.png`. **Max 3 attempts:** 5 months, then 4 months, then 3 months if previous failed. Verify file exists after each call; stop on success.
+- **Crypto:** get_crypto_history (same range, exchange if needed). Input JSON: `homework/{{DATE}}/data/{{SYMBOL}}-{{EXCHANGE}}_1D_chart_input.json`, output PNG: `homework/{{DATE}}/charts/{{SYMBOL}}-{{EXCHANGE}}_1D.png`.
 - Level conversion: Поддержка → support, Сопротивление → resistance; Слабый → weak, Средний → medium, Сильный → strong, Очень сильный → very_strong.
 
 ### 7. Recommendation line
@@ -85,5 +85,5 @@ Use **add-long** / **add-short** / **skip**. For crypto use display like `BTCUSD
 - **Entry only from Strong or Very strong levels.** No weak levels for entry; weak not for SL/TP either.
 - **Proximity:** entry as close to level as possible.
 - **Chart:** max 3 attempts (5 → 4 → 3 months); after success do not create extra charts.
-- **Output files:** only the homework .md and the chart .png in `homework/{{DATE}}/`. Optionally delete the _chart_input.json after success.
+- **Output files:** homework .md at top level of `homework/{{DATE}}/`; chart JSON in `homework/{{DATE}}/data/`; chart PNG in `homework/{{DATE}}/charts/`. Optionally delete the _chart_input.json after success.
 - End with exactly one `RECOMMENDATION:` line for the orchestrator.

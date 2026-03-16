@@ -1,9 +1,9 @@
 ---
-name: screening
-description: Use when user requests screening of trading instruments (stocks, crypto, forex) for trading opportunities. Applies Gerchik methodology criteria for volume, volatility, trend analysis, and correlation checks.
+name: trading-screening
+description: Use when user requests screening of trading instruments (stocks, crypto, forex) for trading opportunities. Applies Gerchik methodology criteria for volume, volatility, trend analysis, and correlation checks. Follows "95% rule" - only trade 5% with "super clear picture".
 ---
 
-# Screening Trading Instruments
+# Trading Screening - Finding Trading Opportunities
 
 ## Overview
 
@@ -16,40 +16,9 @@ Apply this skill when:
 - User asks to find trading opportunities
 - User wants to filter watchlist by criteria
 - User mentions "скрининг", "screening", "find instruments", "trading candidates"
+- Starting homework workflow (Stage 1 of homework)
 
-## Screening Criteria
-
-### Stocks (US Market)
-
-1. **Volume**: Average Volume > 300,000 (standard) or > 500,000 (high liquidity). Avoid instruments with volume < 300,000 (or < 1M for penny stocks)
-2. **Price**: Filter for stocks >$0.50 (so 100 shares > $50). Separate lists for stocks >$10 and <$10
-3. **Market**: US only (exclude ADR), exclude ETF (except SPY, IWM)
-4. **Volatility**: Average True Range > $1
-5. **95% Rule**: Strictly apply - **95%** of reviewed charts must be rejected. Trade only 5% with "super clear picture"
-6. **Filtering**: Select only "hard" situations. Exclude "infected zones", deep false breakouts, "saw" patterns
-
-### Cryptocurrencies
-
-1. **Liquidity**: Filter for liquidity > $1,000,000 (or >100 BTC for pairs)
-2. **Volume thresholds**:
-   - Risk $100: Volume **> 60-70 million**
-   - Risk $200+: Volume **> 100 million**
-   - Minimum: **> 50 million** (manipulative instruments)
-3. **Spot check**: For coins with 50M volume on futures, spot volume should be **15-20 million+**
-
-### Forex
-
-1. Start with 10-15 pairs. Avoid trading the same pair every day; rotate to find active markets
-2. **Liquidity formula**: `Coefficient = (0.1 * ATR_Daily) / Spread`. Threshold must be **> 4** (ideally **> 5**)
-
-### Common Criteria (see @trends rule)
-
-1. **Global trend (W1/MN)**: Determine overall market direction on higher timeframes
-2. **Local trend (D1/H1)**: Clear trend on D1 or H4, or instrument at range boundary
-3. **Trend strength**: Assess trend strength (price action + volumes + ATR)
-4. **Market phase**: Determine current phase (accumulation/impulse/correction/retest/flat/exhaustion) - avoid instruments in flat in middle of range
-
-## Screening Process
+## The Process
 
 ### Step 1: Get Instrument List
 
@@ -100,7 +69,7 @@ If basic criteria fail → **REJECT** immediately.
 
 #### 2.3 Analyze Trends
 
-Use historical data from Step 2.1 and apply @trends rule:
+Use historical data from Step 2.1 and apply @trading-trends skill:
 
 1. **Global trend (W1/MN)**: Analyze weekly/monthly charts
    - Determine direction: Up / Down / Sideways
@@ -161,6 +130,38 @@ Keep only instruments that passed all criteria.
 
 Return list of 10-20 candidates (or fewer if strict filtering).
 
+## Screening Criteria
+
+### Stocks (US Market)
+
+1. **Volume**: Average Volume > 300,000 (standard) or > 500,000 (high liquidity). Avoid instruments with volume < 300,000 (or < 1M for penny stocks)
+2. **Price**: Filter for stocks >$0.50 (so 100 shares > $50). Separate lists for stocks >$10 and <$10
+3. **Market**: US only (exclude ADR), exclude ETF (except SPY, IWM)
+4. **Volatility**: Average True Range > $1
+5. **95% Rule**: Strictly apply - **95%** of reviewed charts must be rejected. Trade only 5% with "super clear picture"
+6. **Filtering**: Select only "hard" situations. Exclude "infected zones", deep false breakouts, "saw" patterns
+
+### Cryptocurrencies
+
+1. **Liquidity**: Filter for liquidity > $1,000,000 (or >100 BTC for pairs)
+2. **Volume thresholds**:
+   - Risk $100: Volume **> 60-70 million**
+   - Risk $200+: Volume **> 100 million**
+   - Minimum: **> 50 million** (manipulative instruments)
+3. **Spot check**: For coins with 50M volume on futures, spot volume should be **15-20 million+**
+
+### Forex
+
+1. Start with 10-15 pairs. Avoid trading the same pair every day; rotate to find active markets
+2. **Liquidity formula**: `Coefficient = (0.1 * ATR_Daily) / Spread`. Threshold must be **> 4** (ideally **> 5**)
+
+### Common Criteria (see @trading-trends skill)
+
+1. **Global trend (W1/MN)**: Determine overall market direction on higher timeframes
+2. **Local trend (D1/H1)**: Clear trend on D1 or H4, or instrument at range boundary
+3. **Trend strength**: Assess trend strength (price action + volumes + ATR)
+4. **Market phase**: Determine current phase (accumulation/impulse/correction/retest/flat/exhaustion) - avoid instruments in flat in middle of range
+
 ## Output Format
 
 Use this format for screening results:
@@ -173,10 +174,10 @@ Use this format for screening results:
 - **Криптовалюты**: Ликвидность > $1M, объём > 50-100M (в зависимости от риска)
 - **Forex**: Коэффициент ликвидности > 4 (идеально > 5)
 - **Правило 95%**: Торговать только 5% с "супер понятной картинкой"
-- Глобальный тренд (W1/MN): Восходящий/нисходящий/боковой (см. @trends)
-- Локальный тренд (D1/H1): Чёткий тренд или граница диапазона (см. @trends)
-- Сила тренда: Сильный/средний/слабый (см. @trends)
-- Фаза рынка: Накопление/импульс/коррекция/ретест/флэт/истощение (см. @trends)
+- Глобальный тренд (W1/MN): Восходящий/нисходящий/боковой (см. @trading-trends)
+- Локальный тренд (D1/H1): Чёткий тренд или граница диапазона (см. @trading-trends)
+- Сила тренда: Сильный/средний/слабый (см. @trading-trends)
+- Фаза рынка: Накопление/импульс/коррекция/ретест/флэт/истощение (см. @trading-trends)
 - Корреляция: Инструмент имеет "собственную жизнь" или низкая корреляция с индексом (для акций)
 
 ## Результаты
@@ -256,3 +257,8 @@ Use for:
 | Trend | Required (W1/D1/H1) | Required (W1/D1/H1) | Required (D1/H1) |
 | Phase | Avoid flat | Avoid flat | Avoid flat |
 | Correlation | Check with indices | N/A | N/A |
+
+## References
+
+- @trading-trends - Trend analysis methodology (global/local trends, trend strength, market phases)
+- @trading-homework - Full homework workflow (screening is Stage 1)

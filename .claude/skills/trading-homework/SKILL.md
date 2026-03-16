@@ -23,7 +23,7 @@ Mandatory session preparation. **Always dispatches sub-agents via Task tool** �
 
 ## Sub-Agent Templates
 
-Templates live in the workspace at `prompts/subagents/`:
+Templates live in `prompts/subagents/` (part of the agent repo; workspace gets this via symlink at `{WORKSPACE}/prompts`):
 
 | Template | Use for |
 |----------|---------|
@@ -31,7 +31,25 @@ Templates live in the workspace at `prompts/subagents/`:
 | `screening-crypto.md` | Bulk crypto screening per exchange |
 | `instrument-analysis.md` | Single instrument full analysis |
 
-**Usage:** Read template → substitute `{{PLACEHOLDERS}}` → pass filled string as `prompt` to Task tool (`subagent_type="general-purpose"`)
+**Usage:** Read template from `{WORKSPACE}/prompts/subagents/<template>` → substitute `{{PLACEHOLDERS}}` → pass filled string as `prompt` to Task tool (`subagent_type="general-purpose"`)
+
+## File-Based Data Flow (tmp/)
+
+OHLCV data and chart input JSON are written to `{WORKSPACE}/tmp/` — **not passed through the orchestrator**.
+
+```
+Sub-agent instrument flow:
+  1. Fetch OHLCV → save {WORKSPACE}/tmp/SYMBOL_DATE_ohlcv_1d.json
+  2. Analyze levels/trends from json (not via LLM context)
+  3. generate_chart_from_file(input_path=json_path) → homework/DATE/SYMBOL_1D.png
+  4. Write homework/DATE/SYMBOL.md with RECOMMENDATION: line
+  5. Orchestrator reads only RECOMMENDATION: — OHLCV never passes through orchestrator
+```
+
+**tmp/ TTL rules:**
+- File naming: `SYMBOL_DATE_ohlcv_1d.json` (e.g. `AAPL_2026-03-16_ohlcv_1d.json`)
+- If DATE == today → reuse (skip re-fetch)
+- Clean manually or at session end; gitignored
 
 ### Placeholders
 

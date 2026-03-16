@@ -215,8 +215,7 @@ For determining trend strength must consider:
 **ATR Calculation:**
 
 **Period:**
-- **Standard: 5 days** (5 bars on daily timeframe D1)
-- For cryptocurrencies: 3 days (3 bars) due to extreme volatility
+- **Standard: 5 days** (5 bars on daily D1) — for stocks and crypto
 - Current forming candle NOT taken into account, only completed days
 
 **Filtering Anomalies:**

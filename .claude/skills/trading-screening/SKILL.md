@@ -36,7 +36,8 @@ Use MCP tools to collect required data:
   - W1 (weekly): `interval="1wk"`, `start_date` 1 year (or 2 years) ago, `end_date` today
   - D1 (daily): `interval="1d"`, `start_date` 6 months (or 1 year) ago, `end_date` today
   - H1 (hourly): `interval="1h"`, `start_date` 1 month ago, `end_date` today
-- `user-markethub-mcp/get_market_stats` - ATR, Average Volume, current volume
+- `user-markethub-mcp/get_market_stats` - Average Volume, current volume (**do not use ATR from here — it returns ATR(14) from Yahoo Finance, not ATR(5)**)
+- **ATR(5)**: compute manually from the last 6 D1 bars already fetched: `TR_i = max(H−L, |H−PrevClose|, |L−PrevClose|); ATR(5) = mean of last 5 TRs`
 
 **For crypto:**
 - `user-markethub-mcp/get_real_time_quote` - current price, spread
@@ -44,7 +45,7 @@ Use MCP tools to collect required data:
   - W1: `interval="1wk"`, `start_date` 1 year ago, `end_date` today
   - D1: `interval="1d"`, `start_date` 6 months ago, `end_date` today
   - H1: `interval="1h"`, `start_date` 1 month ago, `end_date` today
-- Note: `get_market_stats` is for stocks only, calculate ATR from historical data for crypto
+- Note: `get_market_stats` is for stocks only and returns ATR(14) — always calculate ATR(5) from D1 OHLCV for both stocks and crypto
 
 **For forex:**
 - `user-markethub-mcp/get_real_time_quote` - current price, spread
@@ -55,7 +56,7 @@ Use MCP tools to collect required data:
 
 **For stocks:**
 - ✅ Average Volume > 300k (standard) or > 500k (high liquidity)
-- ✅ ATR > $1
+- ✅ ATR(5) > $1 (computed from D1 OHLCV, not from get_market_stats)
 - ✅ Price >$0.50 (or >$10 for main list)
 - ✅ US market only (exclude ADR, ETF except SPY, IWM)
 
@@ -137,7 +138,7 @@ Return list of 10-20 candidates (or fewer if strict filtering).
 1. **Volume**: Average Volume > 300,000 (standard) or > 500,000 (high liquidity). Avoid instruments with volume < 300,000 (or < 1M for penny stocks)
 2. **Price**: Filter for stocks >$0.50 (so 100 shares > $50). Separate lists for stocks >$10 and <$10
 3. **Market**: US only (exclude ADR), exclude ETF (except SPY, IWM)
-4. **Volatility**: Average True Range > $1
+4. **Volatility**: ATR(5) > $1 (compute from D1 OHLCV: mean of last 5 TRs; do NOT use get_market_stats which returns ATR(14))
 5. **95% Rule**: Strictly apply - **95%** of reviewed charts must be rejected. Trade only 5% with "super clear picture"
 6. **Filtering**: Select only "hard" situations. Exclude "infected zones", deep false breakouts, "saw" patterns
 
@@ -226,7 +227,7 @@ Use this format for screening results:
 - Use for: crypto only
 
 **get_market_stats**
-- Purpose: Market statistics including ATR, Average Volume
+- Purpose: Market statistics including Average Volume (**do not use ATR from here** — returns ATR(14) from Yahoo Finance, not ATR(5))
 - Args: `symbol` (string) - ticker symbol
 - Works for: stocks only
 
@@ -251,7 +252,7 @@ Use for:
 | Criterion | Stocks | Crypto | Forex |
 |-----------|--------|--------|-------|
 | Volume | >300k (std) / >500k (high) | >50-100M | N/A |
-| ATR | >$1 | N/A | N/A |
+| ATR(5) | >$1 (from D1 OHLCV) | N/A | N/A |
 | Price | >$0.50 | N/A | N/A |
 | Liquidity | N/A | >$1M | Coef >4 (>5 ideal) |
 | Trend | Required (W1/D1/H1) | Required (W1/D1/H1) | Required (D1/H1) |

@@ -13,13 +13,15 @@ You are a screening sub-agent. Your ONLY task is to screen a list of US stock ti
 
 1. For each ticker in the list, collect data via MCP:
    - **get_real_time_quote** (server: user-markethub-mcp) — `symbol`: ticker. Get current price, change.
-   - **get_market_stats** (server: user-markethub-mcp) — `symbol`: ticker. Get Average Volume, ATR.
+   - **get_market_stats** (server: user-markethub-mcp) — `symbol`: ticker. Get **Average Volume only** (ignore ATR field — it is ATR(14) from Yahoo Finance, not ATR(5)).
    - **get_stock_history** (server: user-markethub-mcp): Use **only** `start_date` and `end_date` (YYYY-MM-DD). Do not use `period`.
      - D1: `symbol`, `interval="1d"`, `start_date`: date 6 months before {{DATE}}, `end_date`: {{DATE}}
      - W1: `symbol`, `interval="1wk"`, `start_date`: date 1 year before {{DATE}}, `end_date`: {{DATE}}
+   - **ATR(5)**: compute manually from the last 6 D1 bars already fetched:
+     `TR_i = max(H_i − L_i, |H_i − Close_{i-1}|, |L_i − Close_{i-1}|); ATR(5) = mean of last 5 TRs`
 2. Check basic criteria (REJECT immediately if fail):
    - Average Volume > 300,000 (standard) or > 500,000 (high liquidity)
-   - ATR > $1
+   - ATR(5) > $1
    - Price > $0.50 (for main list consider > $10)
    - US only (exclude ADR, ETF except SPY, IWM)
 3. Analyze trends from history:
@@ -57,11 +59,11 @@ Use this structure (in Russian):
 
 ## Результаты
 
-| Символ | Цена   | Avg Volume (21д) | ATR (≈) | Изменение | Глоб. тренд | Лок. тренд (D1) | Фаза           | Статус |
-|--------|--------|------------------|---------|-----------|-------------|-----------------|----------------|--------|
-| ...    | ...    | ...              | ...     | ...       | ...         | ...             | ...            | ✅/❌   |
+| Символ | Цена   | Avg Volume (21д) | ATR(5) | Изменение | Глоб. тренд | Лок. тренд (D1) | Фаза           | Статус |
+|--------|--------|------------------|--------|-----------|-------------|-----------------|----------------|--------|
+| ...    | ...    | ...              | ...    | ...       | ...         | ...             | ...            | ✅/❌   |
 
-**Примечания:** Avg Volume и ATR по D1; статус ✅ — кандидат для домашки, ❌ — не проходит.
+**Примечания:** Avg Volume из get_market_stats; ATR(5) вычислен из D1 OHLCV (не из get_market_stats — он возвращает ATR(14)); статус ✅ — кандидат для домашки, ❌ — не проходит.
 
 ## Контекст рынка
 [Кратко: общее состояние рынка, индексы]

@@ -29,7 +29,7 @@ You are an analysis sub-agent. Your ONLY task is to perform full homework analys
 
 - **Direction:** Long or Short from global trend.
 - **Entry trigger:** e.g. breakout level with retest and volume; entry **as close to level as possible** (proximity principle). Use only Strong or Very strong levels for entry.
-- **Stop-loss:** Prefer technical stop (behind level) if it does not exceed calculated stop. Calculated stop = 20–30% of ATR(5). Min 0.2% from price, min 0.5 ATR from entry. Max 1% risk per trade. Stop behind level of at least Medium strength.
+- **Stop-loss:** Prefer technical stop (behind level) if it does not exceed calculated stop. Calculated stop = 20–30% of ATR(5). Use the ATR calculator from @trading-trends Step 6.5 for accurate calculation. Report both technical_atr and calculated_atr. Min 0.2% from price, min 0.5 ATR from entry. Max 1% risk per trade. Stop behind level of at least Medium strength.
 - **Take-profit:** Min 2:1 R:R; preferably TP1, TP2 on levels (at least Medium strength).
 - **Position size:** (Risk in $) / (Entry − Stop). Risk = 1% of deposit max.
 

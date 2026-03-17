@@ -17,8 +17,8 @@ You are a screening sub-agent. Your ONLY task is to screen a list of US stock ti
    - **get_stock_history** (server: user-markethub-mcp): Use **only** `start_date` and `end_date` (YYYY-MM-DD). Do not use `period`.
      - D1: `symbol`, `interval="1d"`, `start_date`: date 6 months before {{DATE}}, `end_date`: {{DATE}}
      - W1: `symbol`, `interval="1wk"`, `start_date`: date 1 year before {{DATE}}, `end_date`: {{DATE}}
-   - **ATR(5)**: compute manually from the last 6 D1 bars already fetched:
-     `TR_i = max(H_i − L_i, |H_i − Close_{i-1}|, |L_i − Close_{i-1}|); ATR(5) = mean of last 5 TRs`
+   - **ATR(5)**: Use the calculator from @trading-trends Step 6.5. Apply to the last 6 D1 bars already fetched.
+     Report both technical_atr and calculated_atr values.
 2. Check basic criteria (REJECT immediately if fail):
    - Average Volume > 300,000 (standard) or > 500,000 (high liquidity)
    - ATR(5) > $1

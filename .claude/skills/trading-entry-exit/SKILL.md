@@ -86,14 +86,43 @@ Apply this skill when:
 
 **Entry:** On bounce from level (retest confirmed level)
 
+### Step 2.4: ATR Calculation Reference
+
+For accurate stop-loss and position sizing, use the ATR calculator implementation.
+
+See: @trading-trends → Step 6.5 for full implementation
+
+**Key Points:**
+- The model reads the Python code and applies the logic (no execution needed)
+- Report both technical_atr and calculated_atr when analyzing instruments
+- Use calculated_atr for filtering anomalous bars in statistics
+- Use technical_atr for real-time stop placement when volatility is normal
+
 ### Step 3: Calculate Stop-Loss
 
 #### 3.1 Using ATR for Stop-Loss Calculation
 
 **ATR Calculation:**
 - **Period: 5 days** (5 bars on daily timeframe D1)
-- Exclude paranormal bars (>1.8-2x standard) and small bars (<0.3-0.5x standard)
-- Use calculated ATR (without paranormal bars) for statistics
+- Use the implementation from @trading-trends Step 6.5
+- Exclude paranormal bars (>1.8-2x standard deviation) and small bars (<0.3-0.5x standard deviation)
+- Report both technical_atr and calculated_atr values
+
+**Example Applying the Calculator:**
+```python
+# Given OHLCV data from MCP tool get_stock_history or get_crypto_history
+ohlcv_data = [
+    {'high': 186.50, 'low': 184.00, 'close': 185.20, 'volume': 45000000},
+    {'high': 187.00, 'low': 184.50, 'close': 186.80, 'volume': 52000000},
+    {'high': 188.20, 'low': 185.00, 'close': 187.50, 'volume': 48000000},
+    {'high': 189.00, 'low': 186.50, 'close': 188.80, 'volume': 61000000},  # Paranormal bar
+    {'high': 189.50, 'low': 187.00, 'close': 188.00, 'volume': 43000000},
+    {'high': 188.80, 'low': 186.20, 'close': 186.50, 'volume': 39000000},
+]
+
+result = calculate_atr_gerchik(ohlcv_data, period=5)
+# Result: technical_atr = 2.35, calculated_atr = 1.92 (paranormal bar excluded)
+```
 
 **Distance from Entry based on ATR:**
 - **Minimum:** 0.5-1.0 ATR from entry

@@ -1,13 +1,13 @@
 ---
 name: trading-screening
-description: Use when user requests screening of trading instruments (stocks, crypto, forex) for trading opportunities. Applies Gerchik methodology criteria for volume, volatility, trend analysis, and correlation checks. Follows "95% rule" - only trade 5% with "super clear picture".
+description: Use when user requests screening of trading instruments (stocks, crypto, forex) for trading opportunities. Applies Gerchik methodology criteria for volume, volatility, trend analysis, and correlation checks. Follows "Фильтр чёткого сетапа" - only trade instruments with "super clear picture".
 ---
 
 # Trading Screening - Finding Trading Opportunities
 
 ## Overview
 
-Systematic screening process to find trading instruments suitable for trading today using Gerchik methodology. Applies strict criteria for volume, volatility, trend analysis, and correlation to filter instruments, following the "95% rule" - only trade 5% with "super clear picture".
+Systematic screening process to find trading instruments suitable for trading today using Gerchik methodology. Applies strict criteria for volume, volatility, trend analysis, and correlation to filter instruments, following "Фильтр чёткого сетапа" - only trade instruments with "super clear picture".
 
 ## When to Use
 
@@ -82,9 +82,9 @@ Use historical data from Step 2.1 and apply @trading-trends skill:
    - Accumulation / Impulse / Correction / Retest / Flat / Exhaustion
    - **REJECT** if in flat in middle of range
 
-#### 2.4 Apply 95% Rule
+#### 2.4 Apply Фильтр чёткого сетапа
 
-**Critical**: Strictly reject instrument if picture is not "super clear". Only 5% should pass.
+**Critical**: Strictly reject instrument if picture is not "super clear". Only trade instruments with obvious, well-defined setups.
 
 Ask yourself:
 - Is the setup obvious and clear?
@@ -139,7 +139,7 @@ Return list of 10-20 candidates (or fewer if strict filtering).
 2. **Price**: Filter for stocks >$0.50 (so 100 shares > $50). Separate lists for stocks >$10 and <$10
 3. **Market**: US only (exclude ADR), exclude ETF (except SPY, IWM)
 4. **Volatility**: ATR(5) > $1 (compute from D1 OHLCV: mean of last 5 TRs; do NOT use get_market_stats which returns ATR(14))
-5. **95% Rule**: Strictly apply - **95%** of reviewed charts must be rejected. Trade only 5% with "super clear picture"
+5. **Фильтр чёткого сетапа**: Strictly apply - only trade instruments with "super clear picture" (obvious setup, well-defined levels, unambiguous trend, clear entry)
 6. **Filtering**: Select only "hard" situations. Exclude "infected zones", deep false breakouts, "saw" patterns
 
 ### Cryptocurrencies
@@ -174,7 +174,7 @@ Use this format for screening results:
 - **Акции**: Average Volume > 300k (стандарт) / > 500k (высокая ликвидность), ATR > $1, цена >$0.50, только США
 - **Криптовалюты**: Ликвидность > $1M, объём > 50-100M (в зависимости от риска)
 - **Forex**: Коэффициент ликвидности > 4 (идеально > 5)
-- **Правило 95%**: Торговать только 5% с "супер понятной картинкой"
+- **Фильтр чёткого сетапа**: Торговать только инструменты с "супер понятной картинкой" (очевидный сетап, чёткие уровни, однозначный тренд, ясный вход)
 - Глобальный тренд (W1/MN): Восходящий/нисходящий/боковой (см. @trading-trends)
 - Локальный тренд (D1/H1): Чёткий тренд или граница диапазона (см. @trading-trends)
 - Сила тренда: Сильный/средний/слабый (см. @trading-trends)
@@ -240,7 +240,7 @@ Use for:
 
 ## Common Mistakes
 
-1. **Not applying 95% rule strictly** - Remember: reject 95%, only 5% pass
+1. **Not applying Фильтр чёткого сетапа strictly** - Remember: only trade instruments with "super clear picture"
 2. **Trading unclear setups** - Only trade "super clear picture"
 3. **Ignoring correlation** - Check correlation with indices for stocks
 4. **Not checking all timeframes** - Must analyze W1, D1, H1

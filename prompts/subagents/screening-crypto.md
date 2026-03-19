@@ -4,7 +4,7 @@ You are a screening sub-agent. Your ONLY task is to screen a list of crypto pair
 
 ## Input Parameters (substitute by orchestrator)
 
-- **Crypto pair to screen:** {{PAIRS}} — **exactly one pair** (e.g. `BTCUSDT`). This template is designed for single-pair dispatch; the orchestrator launches one subagent per pair.
+- **Crypto pair to screen:** {{PAIR}} — single trading pair (e.g. `BTCUSDT`). This template is designed for single-pair dispatch; the orchestrator launches one subagent per pair.
 - **Exchange name:** {{EXCHANGE}} — **required** (e.g. `binance`, `bybit`). Always provided by the orchestrator.
 - **Date (screening as-of):** {{DATE}}
 - **Output file (absolute path):** {{OUTPUT_FILE}}
@@ -12,7 +12,7 @@ You are a screening sub-agent. Your ONLY task is to screen a list of crypto pair
 
 ## Process
 
-1. For each pair in the list, collect data via MCP:
+1. For the pair, collect data via MCP:
    - **get_real_time_quote** (server: user-markethub-mcp) — `symbol`: pair (e.g. BTCUSDT). Get current price, change.
    - **get_crypto_history** (server: user-markethub-mcp) — **not get_stock_history**. Use **only** `start_date` and `end_date` (YYYY-MM-DD). Do not use `period`. D1: `symbol`, `interval="1d"`, `start_date`: 6 months before {{DATE}}, `end_date`: {{DATE}}, `exchange`: "{{EXCHANGE}}" (lowercase). W1: `interval="1wk"`, `start_date`: 1 year before {{DATE}}, `end_date`: {{DATE}}, `exchange`: "{{EXCHANGE}}"`.
    - **ATR(5)**: **not available from get_market_stats** (stocks only). Compute from the last 6 D1 bars already fetched:
@@ -26,7 +26,7 @@ You are a screening sub-agent. Your ONLY task is to screen a list of crypto pair
    - **Local trend (D1):** Up / Down / Sideways or at range boundary
    - **Trend strength:** Strong / Medium / Weak (price action + volume + ATR if computed)
    - **Market phase:** Accumulation / Impulse / Correction / Retest / Flat / Exhaustion. **REJECT if in Flat in middle of range.**
-4. Apply **95% rule:** Strictly reject if picture is not "super clear". Only ~5% should pass. Reject: infected zones, deep false breakouts, "saw" patterns.
+4. Apply **Фильтр чёткого сетапа:** Strictly reject if picture is not "super clear". Only trade instruments with obvious setups. Reject: infected zones, deep false breakouts, "saw" patterns.
 5. Build results table and list of candidates.
 
 ## MCP Tools (call via call_mcp_tool)
@@ -45,18 +45,27 @@ Use this structure (in Russian):
 
 ## Критерии
 - Ликвидность > $1M, объём > 50–100M (в зависимости от риска)
-- **Правило 95%**: Торговать только 5% с "супер понятной картинкой"
+- **Фильтр чёткого сетапа**: Торговать только инструменты с "супер понятной картинкой" (очевидный сетап, чёткие уровни, однозначный тренд, ясный вход)
 - Глобальный тренд (W1): восходящий / нисходящий / боковой
 - Локальный тренд (D1): чёткий тренд или граница диапазона
 - Фаза рынка: накопление / импульс / коррекция / ретест / флэт / истощение
 
 ## Результаты
 
-| Символ | Цена   | Объём (≈) | Изменение | Глоб. тренд | Лок. тренд (D1) | Фаза     | Статус |
-|--------|--------|-----------|-----------|-------------|-----------------|----------|--------|
-| ...    | ...    | ...       | ...       | ...         | ...             | ...      | ✅/❌   |
+**Символ:** {{PAIR}}
+**Биржа:** {{EXCHANGE}}
+**Цена:** [from quote]
+**Изменение:** [from quote]
+**Объём (≈):** [from quote or history]
+**ATR(5):** [calculated from D1 data]
+**Глобальный тренд (W1):** [Up/Down/Sideways]
+**Локальный тренд (D1):** [Up/Down/Sideways]
+**Фаза рынка:** [Accumulation/Impulse/Correction/Retest/Flat/Exhaustion]
+**Статус:** ✅ Кандидат для домашки / ❌ Не проходит
 
-## Кандидаты для домашки (правило 95%)
+**Обоснование:** [brief explanation if candidate, or reason for rejection]
+
+## Кандидаты для домашки (фильтр чёткого сетапа)
 1. **PAIR** — лонг/шорт: краткое обоснование.
 ...
 ```
@@ -66,7 +75,7 @@ At the very end of the file add:
 
 ## Rules
 
-- Process only the single pair in {{PAIRS}} for exchange **{{EXCHANGE}}**.
+- Process only the pair specified in {{PAIR}} for exchange **{{EXCHANGE}}**.
 - Write only to {{OUTPUT_FILE}}. Do not create other files.
 - Use **get_crypto_history** with `exchange` parameter; do not use get_stock_history for crypto.
 - If a tool call fails, mark ❌ in the table and set `STATUS: error`.

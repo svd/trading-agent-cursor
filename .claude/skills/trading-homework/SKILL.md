@@ -54,15 +54,15 @@ Sub-agent instrument flow:
 ### Placeholders
 
 **screening-stocks.md**
-- `{{TICKERS}}` — comma-separated: `AAPL, META, NFLX`
+- `{{TICKER}}` — single ticker symbol: `AAPL`
 - `{{DATE}}` — `YYYY-MM-DD`
-- `{{OUTPUT_FILE}}` — absolute path: `{workspace}/homework/{DATE}/screening/screening-stocks.md`
+- `{{OUTPUT_FILE}}` — absolute path: `{workspace}/homework/{DATE}/screening/screening-{SYMBOL}.md`
 - `{{WORKSPACE}}` — workspace root absolute path
 
 **screening-crypto.md**
-- `{{PAIRS}}` — e.g. `BTCUSDT, ETHUSDT`
+- `{{PAIR}}` — single pair: `BTCUSDT`
 - `{{EXCHANGE}}` — `binance` or `bybit`
-- `{{DATE}}`, `{{OUTPUT_FILE}}` (e.g. `homework/{DATE}/screening/screening-crypto-binance.md`), `{{WORKSPACE}}`
+- `{{DATE}}`, `{{OUTPUT_FILE}}` (e.g. `homework/{DATE}/screening/screening-{PAIR}.md`), `{{WORKSPACE}}`
 
 **instrument-analysis.md**
 - `{{SYMBOL}}` — `AAPL` or `BTCUSDT`
@@ -132,11 +132,18 @@ AskUserQuestion(
 
 ### 3. Run Screening
 
-- **Stocks**: fill `screening-stocks.md` → Task → `homework/{DATE}/screening/screening-stocks.md`
-- For batch selections from universe: create separate screening tasks per batch (e.g., `batch-tech-internet.md`)
-- **Crypto per exchange**: fill `screening-crypto.md` → Task → `homework/{DATE}/screening/screening-crypto-{exchange}.md`
-- Run up to 4 screening Tasks in parallel.
-- After completion: check `STATUS: success` or `STATUS: error`. Present candidate table, optionally confirm with user before proceeding.
+- **Stocks**: For each ticker, fill `screening-stocks.md` with single ticker → Task → `homework/{DATE}/screening/screening-{SYMBOL}.md`
+- For batch selections from universe: create one screening task per ticker
+- **Crypto per exchange**: For each pair, fill `screening-crypto.md` with single pair → Task → `homework/{DATE}/screening/screening-{PAIR}.md`
+- Run up to 4 screening Tasks in parallel (one per ticker/pair).
+- After all tasks complete: aggregate individual results into summary table:
+  ```markdown
+  | Символ | Цена | ATR(5) | Тренд | Фаза | Статус |
+  |--------|------|--------|-------|------|--------|
+  | AAPL   | ...  | ...    | ...   | ...  | ✅/❌  |
+  ```
+- Write aggregated summary to `homework/{DATE}/screening/screening-stocks.md` or `screening-crypto-{exchange}.md`
+- Check each file for `STATUS: success` or `STATUS: error`. Present candidate table, optionally confirm with user before proceeding.
 
 ### 4. Instrument Analysis (batched, 2–4 parallel)
 
@@ -169,8 +176,10 @@ Show Summary table and list of homework files + charts.
 
 | Type | Path |
 |------|------|
-| Screening stocks | `homework/{DATE}/screening/screening-stocks.md` |
-| Screening crypto | `homework/{DATE}/screening/screening-crypto-{exchange}.md` |
+| Screening stock (individual) | `homework/{DATE}/screening/screening-{SYMBOL}.md` |
+| Screening crypto (individual) | `homework/{DATE}/screening/screening-{PAIR}.md` |
+| Screening stocks (aggregated) | `homework/{DATE}/screening/screening-stocks.md` |
+| Screening crypto (aggregated) | `homework/{DATE}/screening/screening-crypto-{exchange}.md` |
 | Homework stock | `homework/{DATE}/SYMBOL.md` |
 | Homework crypto | `homework/{DATE}/SYMBOL-EXCHANGE.md` |
 | Chart JSON | `homework/{DATE}/data/SYMBOL_1D_chart_input.json` or `SYMBOL-EXCHANGE_1D_chart_input.json` |
